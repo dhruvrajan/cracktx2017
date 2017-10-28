@@ -8,6 +8,24 @@ import xml.etree.ElementTree as ET
 import pickle
 import random
 from collections import defaultdict
+from nltk.corpus import wordnet as wn
+import networkx as nx
+
+def closure_graph(synset, fn):
+    seen = set()
+    graph = nx.DiGraph()
+
+    def recurse(s):
+        if not s in seen:
+            seen.add(s)
+            graph.add_node(s.name)
+            for s1 in fn(s):
+                graph.add_node(s1.name)
+                graph.add_edge(s.name, s1.name)
+                recurse(s1)
+
+    recurse(synset)
+    return seen
 
 
 def extract_puns(pun_files):
@@ -80,6 +98,10 @@ def main():
     print(puns[inverted_index["alleged"][0]])
     print(inverted_index["vault"])
     print(generate_pun(["bovine"]))
+    dog = wn.synset('dog.n.01')
+    setx = closure_graph(dog,
+                      lambda s: s.hypernyms())
+    print(setx)
 
 
 if __name__ == "__main__":
