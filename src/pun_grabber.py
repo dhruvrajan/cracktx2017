@@ -15,16 +15,16 @@ def closure_graph(synset, fn):
     seen = set()
     graph = nx.DiGraph()
 
-    def recurse(s):
+    def recurse(s, count):
         if not s in seen:
             seen.add(s)
             graph.add_node(s.name)
             for s1 in fn(s):
                 graph.add_node(s1.name)
                 graph.add_edge(s.name, s1.name)
-                recurse(s1)
+                if count > 0: recurse(s1, count - 1)
 
-    recurse(synset)
+    recurse(synset, 2)
     return seen
 
 
@@ -69,17 +69,36 @@ def load_data():
 
     return inverted_index, puns
 
+def get_similar(word):
+    synsets = wn.synsets(word)
+
+    if synsets == []: return []
+    word = synsets[0]
+
+    hyponyms = closure_graph(word,
+                             lambda s: s.hyponyms())
+
+    hypernyms = closure_graph(word,
+                              lambda s: s.hypernyms())
+    hypernyms.update(hyponyms)
+    hypernyms = list(map(lambda h: h.lemma_names()[0], list(hypernyms)))
+
+    return hypernyms
+
+
 
 def generate_pun(phrase):
     inverted_index, puns = load_data()
     for word in phrase:
-        try:
-            pun_ids = inverted_index[word]
-            return puns[random.choice(pun_ids)]
-        except:
-            pass
+        for nym in get_similar(word):
+            try:
+                print("FOUND NYM:", nym)
+                pun_ids = inverted_index[nym]
+                return " ".join(puns[random.choice(pun_ids)])
+            except:
+                pass
 
-    return None
+    return "failed: NullPunterException"
 
 
 def main():
@@ -94,14 +113,15 @@ def main():
     with open("inverted_index.idx", "rb") as f:
         inverted_index, puns = pickle.load(f)
 
-    print(inverted_index["alleged"])
-    print(puns[inverted_index["alleged"][0]])
-    print(inverted_index["vault"])
-    print(generate_pun(["bovine"]))
-    dog = wn.synset('dog.n.01')
-    setx = closure_graph(dog,
-                      lambda s: s.hypernyms())
-    print(setx)
+    # print(inverted_index["alleged"])
+    # print(puns[inverted_index["alleged"][0]])
+    # print(inverted_index["vault"])
+    # print(generate_pun(["bovine"]))
+    #
+    # print(get_similar("cow"))
+
+    print(generate_pun(["a;lskdfja;sldkjfa;slkdfj"]))
+
 
 
 if __name__ == "__main__":
