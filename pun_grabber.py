@@ -99,10 +99,10 @@ def generate_pun(phrase):
 
 
 def main():
-    puns = extract_puns(['/semeval2017_task7/data/test/subtask2-heterographic-test.xml',
-                     '/semeval2017_task7/data/test/subtask2-homographic-test.xml'])
-    inverted_index = create_inverted_index(puns, ['/semeval2017_task7/data/test/subtask2-heterographic-test.gold',
-                                                 '/semeval2017_task7/data/test/subtask2-homographic-test.gold'])
+    puns = extract_puns(['./semeval2017_task7/data/test/subtask2-heterographic-test.xml',
+                     './semeval2017_task7/data/test/subtask2-homographic-test.xml'])
+    inverted_index = create_inverted_index(puns, ['./semeval2017_task7/data/test/subtask2-heterographic-test.gold',
+                                                 './semeval2017_task7/data/test/subtask2-homographic-test.gold'])
 
     with open("inverted_index.idx", "wb") as f:
         pickle.dump((inverted_index, dict(puns)), f)
