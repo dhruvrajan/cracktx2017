@@ -1,0 +1,12 @@
+* Pun Project Parts
+*** DONE Pun Scraping
+    CLOSED: [2017-10-28 Sat 16:07]
+    - Get pun data into a nice (pickle) format
+*** TODO Pun Triggers
+    - What triggers the pun system
+*** TODO Pun Retrieval
+    - Given a trigger, find a good pun
+*** TODO Facebook Messenger Chatbot
+*** TODO Maybe Niels' Groupme chatbot
+*** TODO User Interface
+*** TODO Run everything in the cloud
