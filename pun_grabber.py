@@ -87,7 +87,8 @@ def generate_pun(phrase):
     for word in phrase.strip().split(" "):
         similar = get_similar(word)
         random.shuffle(similar)
-        for nym in similar:
+        similar.insert(0, word)
+		for nym in similar:
             try:
                 pun_ids = inverted_index[nym.lower()]
                 return " ".join(puns[random.choice(pun_ids)])
