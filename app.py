@@ -2,8 +2,6 @@ import os
 import sys
 import json
 from datetime import datetime
-import nltk
-nltk.download("wordnet")
 import pun_grabber
 
 import requests
@@ -88,7 +86,7 @@ def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
         if type(msg) is dict:
             msg = json.dumps(msg)
         else:
-            msg = str(msg, 'utf-8').format(*args, **kwargs)
+            msg = '' #str(msg, 'utf-8').format(*args, **kwargs)
         print(u"{}: {}".format(datetime.now(), msg))
     except UnicodeEncodeError:
         pass  # squash logging errors in case of non-ascii text
