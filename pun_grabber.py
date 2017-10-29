@@ -1,9 +1,3 @@
-# isPun = {}
-# with open('../semeval2017_task7/data/test/subtask1-heterographic-test.gold', 'r') as f:
-#     for line in f:
-#         identifier, label = tuple(line.strip().split())
-#         isPun[identifier] = False if (label == '0') else True
-
 import xml.etree.ElementTree as ET
 import pickle
 import random
@@ -26,6 +20,7 @@ def closure_graph(synset, fn):
 
     recurse(synset, 2)
     return seen
+
 
 
 def extract_puns(pun_files):
@@ -56,9 +51,9 @@ def create_inverted_index(puns, mapping_files):
                 if not inverted_index[the_word]:
                     punIDList = []
                     punIDList.append(punID)
-                    inverted_index[the_word] = punIDList
+                    inverted_index[the_word.lower()] = punIDList
                 else:
-                    inverted_index[the_word].append(punID)
+                    inverted_index[the_word.lower()].append(punID)
 
     return dict(inverted_index)
 
@@ -89,11 +84,12 @@ def get_similar(word):
 
 def generate_pun(phrase):
     inverted_index, puns = load_data()
-    for word in phrase:
-        for nym in get_similar(word):
+    for word in phrase.strip().split(" "):
+        similar = get_similar(word)
+        random.shuffle(similar)
+        for nym in similar:
             try:
-                print("FOUND NYM:", nym)
-                pun_ids = inverted_index[nym]
+                pun_ids = inverted_index[nym.lower()]
                 return " ".join(puns[random.choice(pun_ids)])
             except:
                 pass
@@ -113,14 +109,7 @@ def main():
     with open("inverted_index.idx", "rb") as f:
         inverted_index, puns = pickle.load(f)
 
-    # print(inverted_index["alleged"])
-    # print(puns[inverted_index["alleged"][0]])
-    # print(inverted_index["vault"])
-    # print(generate_pun(["bovine"]))
-    #
-    # print(get_similar("cow"))
-
-    print(generate_pun(["a;lskdfja;sldkjfa;slkdfj"]))
+    print(generate_pun("hat"))
 
 
 
