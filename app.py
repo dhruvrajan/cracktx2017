@@ -2,6 +2,8 @@ import os
 import sys
 import json
 from datetime import datetime
+import nltk
+nltk.download("wordnet")
 import pun_grabber
 
 import requests
